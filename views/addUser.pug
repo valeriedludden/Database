@@ -1,0 +1,13 @@
+html
+    head
+        title= title
+    body
+        div Create User
+            form(action='/addUser' method='post')
+                input(type='text', name='first', placeholder='First Name')
+                input(type='text', name='last', placeholder='Last Name')
+                input(type='email', name='email', placeholder='email')
+                input(type='number', name='age', placeholder='Age')
+                input(type='submit', value='Add User')
+
+        a(href='/users') See list of users

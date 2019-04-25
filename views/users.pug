@@ -1,0 +1,29 @@
+html
+    head
+        title= title
+    body
+        table(style='width: 100%:, color: blue:')
+            thead
+                tr
+                    th First
+                    th Last
+                    th Email
+                    th Age
+                    th User Id
+
+            tbody
+                each user in userArray
+                    tr
+                        td #{user.first}
+                        td #{user.last}
+                        td #{user.email}
+                        td #{user.age}
+                        td #{user._id}
+                        td
+                            a(href='/edit/' + user.id) Edit User
+                        td
+                            a(href='/delete/' + user.id) Delete User
+        br
+        br
+        a(href='/addUser') Add new user
+
