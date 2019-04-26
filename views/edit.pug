@@ -1,13 +1,12 @@
 div
-    form(action='/edit/' + user.userId, method='post')
-        //input(type='text', name='userId', value=user.userId)
-        input(type='text', name='username', value=user.name)
-        input(type='role', name='email', value=user.role)
-        //input(type='text', name='address', value=user.address)
-        //input(type='number', name='age', value=user.age)
+    form(action='/edit/' + editUser._id method='post')
+        input(type='text', name='first', value=editUser.first)
+        input(type='text', name='last', value=editUser.last)
+        input(type='email', name='email', value=editUser.email)
+        input(type='number', name='age', value=editUser.age)
         input(type='submit', value='Submit Changes')
+
 br
 
 a(href='/') Back to homepage
 a(href='/users') See all users
-

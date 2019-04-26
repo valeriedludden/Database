@@ -2,6 +2,11 @@ html
     head
         title= title
     body
+        div
+            form(action='/searchResult/' + 'searchFirst', method='post')
+                input(type='text', name='searchFirst', value='Search First Name')
+                input(type='submit', value='Search')
+
         table(style='width: 100%:, color: blue:')
             thead
                 tr
@@ -20,9 +25,9 @@ html
                         td #{user.age}
                         td #{user._id}
                         td
-                            a(href='/edit/' + user.id) Edit User
+                            a(href='/edit/' + user._id) Edit User
                         td
-                            a(href='/delete/' + user.id) Delete User
+                            a(href='/delete/' + user._id) Delete User
         br
         br
         a(href='/addUser') Add new user

@@ -25,40 +25,42 @@ const userSchema = new mongoose.Schema({
     last: String,
     email: String,
     age: { type: Number, min: 1, max: 125},
-    // createdDate: { type: Date, default: Date.now }
 });
 
 const user = mongoose.model('userCollection', userSchema);
 
-app.post('/edit', (req, res) => {
-    console.log(`POST /newUser: ${JSON.stringify(req.body)}`);
-    const newUser = new user();
-    newUser.first = req.body.first;
-    newUser.last = req.body.last;
-    newUser.email = req.body.email;
-    newUser.age = req.body.age;
-    newUser.save((err, data) => {
-        if (err) {
-            return console.error(err);
-        }
-        res.send(`done ${data}`);
-    });
+app.post('/edit/:id', (req, res) => {
+
+    let id = req.params.id;
+    let first = req.body.first;
+    let last = req.body.last;
+    let email = req.body.email;
+    let age = req.body.age;
+    user.findOneAndUpdate({_id: id},
+        {first: first,
+            last: last,
+            email: email,
+            age: age},
+        {new : true },
+            (err, data) =>{
+        if (err) return console.log(`Oops! ${err}`);
+        res.redirect('/users');
+
+    })
+
 });
 
-app.post('/updateUser', (req, res) => {
-    console.log(`POST /updateUserRole: ${JSON.stringify(req.body)}`);
-    let matchedName = req.body.first + req.body.last;
-    let editedUser = req.body.role;
-    user.findOneAndUpdate( {name: matchedName}, {user: editedUser},
-        { new: true },
-        (err, data) => {
-            if (err) return console.log(`Oops! ${err}`);
-            console.log(`data -- ${data.editedUser}`);
-            let returnMsg = `user name : ${name} Updated User : ${data.editedUser}`;
-            console.log(returnMsg);
-            res.send(returnMsg);
-        });
+app.post('/searchResult/:name', (req, res) => {
+    let search = req.params.name;
+    console.log(`search ${search}`);
+    let found;
+    user.findOne({first: search},{new: true}, (err, data) => {
+        if (err) return console.log(`Oops! ${err}`);
+        found = data
+    });
+    res.send(found)
 });
+
 app.get('/', (req, res)=>{
     res.redirect('/users');
 });
@@ -67,7 +69,6 @@ app.get('/addUser', (req, res)=>{
 });
 
 app.post('/addUser', (req, res) => {
-    // console.log(`POST /newUser: ${JSON.stringify(req.body)}`);
     const newUser = new user();
     newUser.first = req.body.first;
     newUser.last = req.body.last;
@@ -88,29 +89,22 @@ app.get('/users', (req, res) => {
    });
 });
 
-// app.get('/users/:name', (req, res) => {
-//     let userName = req.params.name;
-//     console.log(`GET /users/:name: ${JSON.stringify(req.params)}`);
-//     user.findOne({ name: userName }, (err, data) => {
-//         if (err) return console.log(`Oops! ${err}`);
-//         console.log(`data -- ${JSON.stringify(data)}`);
-//         let returnMsg = `user name : ${userName} role : ${data.role}`;
-//         console.log(returnMsg);
-//         res.send(returnMsg);
-//     }); });
-
-
-app.get('/users/:name', (req, res) => {
-    let userName = req.params.name;
-    console.log(`GET /users/:name: ${JSON.stringify(req.params)}`);
-    user.findOne({ name: userName }, (err, data) => {
+app.get('/edit/:id', (req, res) => {
+    let userId = req.params.id;
+    console.log(`user Id ${userId}`);
+    user.findOne({ _id: userId }, (err, data) => {
         if (err) return console.log(`Oops! ${err}`);
         console.log(`data -- ${JSON.stringify(data)}`);
-        let returnMsg = `user name : ${userName} role : ${data.role}`;
-        console.log(returnMsg);
-        res.send(returnMsg);
+        let editUser = {
+            _id: userId,
+            first: data.first,
+            last: data.last,
+            email: data.email,
+            age: data.age
+        };
+        console.log('editUser ' + editUser);
+        res.render('edit', {editUser: editUser});
     }); });
-
 
 app.listen(port, (err) => {
     if (err) console.log(err);
