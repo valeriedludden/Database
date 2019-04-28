@@ -29,25 +29,14 @@ const userSchema = new mongoose.Schema({
 
 const user = mongoose.model('userCollection', userSchema);
 
-app.post('/edit/:id', (req, res) => {
+app.get('/', (req, res)=>{
+    res.redirect('/users');
+});
 
-    let id = req.params.id;
-    let first = req.body.first;
-    let last = req.body.last;
-    let email = req.body.email;
-    let age = req.body.age;
-    user.findOneAndUpdate({_id: id},
-        {first: first,
-            last: last,
-            email: email,
-            age: age},
-        {new : true },
-            (err, data) =>{
-        if (err) return console.log(`Oops! ${err}`);
-        res.redirect('/users');
-
-    })
-
+app.get('/users', (req, res) => {
+    user.find({}, (err, data)=> {
+        res.render('users', {userArray : data})
+    });
 });
 
 app.post('/searchResult/', (req, res) => {
@@ -60,27 +49,6 @@ app.post('/searchResult/', (req, res) => {
         res.render('searchResult', {user: found})
     });
 
-});
-
-app.get('/', (req, res)=>{
-    res.redirect('/users');
-});
-app.get('/addUser', (req, res)=>{
-    res.render('addUser')
-});
-
-app.post('/addUser', (req, res) => {
-    const newUser = new user();
-    newUser.first = req.body.first;
-    newUser.last = req.body.last;
-    newUser.email = req.body.email;
-    newUser.age = req.body.age;
-    newUser.save((err, data) => {
-        if (err) {
-            return console.error(err);
-        }
-        res.redirect('/users');
-    });
 });
 
 app.get('/users/up', (req, res)=>{
@@ -103,11 +71,22 @@ app.get('/users/down', (req, res)=>{
     })
 });
 
+app.get('/addUser', (req, res)=>{
+    res.render('addUser')
+});
 
-app.get('/users', (req, res) => {
-   user.find({}, (err, data)=> {
-       res.render('users', {userArray : data})
-   });
+app.post('/addUser', (req, res) => {
+    const newUser = new user();
+    newUser.first = req.body.first;
+    newUser.last = req.body.last;
+    newUser.email = req.body.email;
+    newUser.age = req.body.age;
+    newUser.save((err, data) => {
+        if (err) {
+            return console.error(err);
+        }
+        res.redirect('/users');
+    });
 });
 
 app.get('/edit/:id', (req, res) => {
@@ -125,7 +104,29 @@ app.get('/edit/:id', (req, res) => {
         };
         console.log('editUser ' + editUser);
         res.render('edit', {editUser: editUser});
-    }); });
+    });
+});
+
+app.post('/edit/:id', (req, res) => {
+
+    let id = req.params.id;
+    let first = req.body.first;
+    let last = req.body.last;
+    let email = req.body.email;
+    let age = req.body.age;
+    user.findOneAndUpdate({_id: id},
+        {first: first,
+            last: last,
+            email: email,
+            age: age},
+        {new : true },
+            (err, data) =>{
+        if (err) return console.log(`Oops! ${err}`);
+        res.redirect('/users');
+
+    })
+
+});
 
 app.get('/delete/:id', (req, res) => {
     let deleteUser = req.params.id;

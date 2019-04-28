@@ -2,6 +2,7 @@ html
     head
         title= title
     body
+        h1 User Manager
         div
             form(action='/searchResult/', method='post')
                 input(type='text', name='searchFirst', placeholder='Search First Name')
@@ -30,8 +31,11 @@ html
                             a(href='/delete/' + user._id) Delete User
         br
         br
-        a(href='/addUser') Add new user
-        a(href='/users/up') Sort A-Z
-        a(href='/users/down') Sort Z-A
+        div
+            a(href='/addUser') Add new user
+        div
+            a(href='/users/up') Sort First Name A-Z
+        div
+            a(href='/users/down') Sort First Name Z-A
 
 
