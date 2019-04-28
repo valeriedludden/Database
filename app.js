@@ -50,15 +50,16 @@ app.post('/edit/:id', (req, res) => {
 
 });
 
-app.post('/searchResult/:name', (req, res) => {
-    let search = req.params.name;
+app.post('/searchResult/', (req, res) => {
+    let search = req.body.searchFirst;
     console.log(`search ${search}`);
     let found;
-    user.findOne({first: search},{new: true}, (err, data) => {
+    user.findOne({first: search}, (err, data) => {
         if (err) return console.log(`Oops! ${err}`);
-        found = data
+        found = data;
+        res.render('searchResult', {user: found})
     });
-    res.send(found)
+
 });
 
 app.get('/', (req, res)=>{
@@ -80,6 +81,26 @@ app.post('/addUser', (req, res) => {
         }
         res.redirect('/users');
     });
+});
+
+app.get('/users/up', (req, res)=>{
+    user.find({}).sort({first: 1}).exec( (err, data) =>{
+        if (err) {
+            return console.error(err);
+        }
+
+        res.render('users', {userArray: data})
+    })
+});
+
+app.get('/users/down', (req, res)=>{
+    user.find({}).sort({first: -1}).exec( (err, data) =>{
+        if (err) {
+            return console.error(err);
+        }
+
+        res.render('users', {userArray: data})
+    })
 });
 
 
@@ -105,6 +126,17 @@ app.get('/edit/:id', (req, res) => {
         console.log('editUser ' + editUser);
         res.render('edit', {editUser: editUser});
     }); });
+
+app.get('/delete/:id', (req, res) => {
+    let deleteUser = req.params.id;
+    console.log("delete " + deleteUser);
+    user.findOneAndDelete({_id: deleteUser}, (err, data) => {
+        if (err) {
+            return console.error(err);
+        }
+        res.redirect('/users')
+    })
+});
 
 app.listen(port, (err) => {
     if (err) console.log(err);
